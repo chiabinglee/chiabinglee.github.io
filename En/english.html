@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Text Reader with Size and Speed Controls</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            max-width: 650px; /* Slightly wider layout to hold the larger text */
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .controls-panel {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .control-group {
+            margin-bottom: 15px;
+        }
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+        .control-group label {
+            display: inline-block;
+            width: 140px;
+            font-weight: 600;
+            color: #475569;
+        }
+        .row-item {
+            background: #ffffff;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        /* 1. UPDATED: Changed default baseline font-size to 20px */
+        .readable-text {
+            margin: 0;
+            color: #334155;
+            font-size: 20px; 
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+        .icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px; /* Enhanced button size to balance 20px text */
+            cursor: pointer;
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+            white-space: nowrap;
+        }
+        .icon-btn:hover {
+            background-color: #2b6cb0;
+        }
+        .icon-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+    </style>
+    <script>
+        function speakParagraph(pId) {
+            const text = document.getElementById(pId).innerText;
+            const globalSpeed = document.getElementById('master-speed').value;
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = parseFloat(globalSpeed);
+            
+            const voices = window.speechSynthesis.getVoices();
+            const googleVoice = voices.find(voice => voice.name.includes('Google') && voice.lang.startsWith('en'));
+                        
+            if (googleVoice) {
+                utterance.voice = googleVoice;
+            }
+
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function changeTextSize() {
+            const sizeSlider = document.getElementById('master-size');
+            const newSize = sizeSlider.value + 'px';
+            const textElements = document.querySelectorAll('.readable-text');
+            
+            textElements.forEach(element => {
+                element.style.fontSize = newSize;
+            });
+        }
+
+        window.speechSynthesis.onvoiceschanged = () => {
+            window.speechSynthesis.getVoices();
+        };
+    </script>
+</head>
+<body>
+
+    <h2>Text Reader Dashboard</h2>
+
+    <div class="controls-panel">
+        <div class="control-group">
+            <label for="master-speed">🎛️ Voice Speed: </label>
+            <input type="range" id="master-speed" min="0.2" max="1.2" step="0.1" value="0.6">
+        </div>
+        
+        <div class="control-group">
+            <label for="master-size">🔎 Text Size: </label>
+            <!-- 2. UPDATED: Changed default slider handle initial value to 20 -->
+            <input type="range" id="master-size" min="14" max="36" step="1" value="20" oninput="changeTextSize()">
+        </div>
+    </div>
+    
+    <div class="row-item">
+        <p id="p-0" class="readable-text">
+        Be quiet.<br>
+        Repeat after me.<br>
+        Louder, please.<br>
+        Please turn to page fourteen.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('p-0')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            Speak
+        </button>
+    </div>
+
+    <div class="row-item">
+        <p id="p-00" class="readable-text">
+        Raise your hand.<br>
+        Put down your hand.<br>
+        Show me your homework.<br>
+        Go back to your seat.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('p-00')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            Speak
+        </button>
+    </div>
+
+
+    <div class="row-item">
+        <p id="p-1" class="readable-text">
+        How is the weather?<br>
+        It's rainy.<br>
+        Is it warm?<br>
+        No, it's not.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('p-1')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            Speak
+        </button>
+    </div>
+    
+    <div class="row-item">
+        <p id="p-11" class="readable-text">
+        Line up, please.<br>
+        Let's go.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('p-11')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            Speak
+        </button>
+    </div>
+    
+    <div class="row-item">
+        <p id="p-2" class="readable-text">
+        What time is it?<br>
+        It's eleven o'clock.
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('p-2')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            Speak
+        </button>
+    </div>
+
+   <div class="row-item">
+        <p id="p-3" class="readable-text">
+        Is this your book?<br>
+        Yes, it is.<br>
+        No, it's not.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('p-3')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            Speak
+        </button>
+    </div>
+    
+    <div class="row-item">
+        <p id="p-4" class="readable-text">
+        What happened?<br>
+        I'm OK.<br>
+        Nice!<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('p-4')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            Speak
+        </button>
+    </div>
+
+</body>
+</html>
