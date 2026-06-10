@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Text Reader with Size and Speed Controls</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            max-width: 650px;
+            /* Slightly wider layout to hold the larger text */
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        /* UPDATED: Increased padding and margin for a larger control bar area */
+        .controls-panel {
+            background-color: #ffffff;
+            padding: 26px 24px;
+            border-radius: 14px;
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* UPDATED: Increased spacing between the speed and size rows */
+        .control-group {
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        /* UPDATED: Increased label font size and width for better readability */
+        .control-group label {
+            display: inline-block;
+            width: 160px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        /* NEW: Added sizing rules to make the sliders thicker and easier to use */
+        .control-group input[type="range"] {
+            flex-grow: 1;
+            height: 12px;
+            cursor: pointer;
+            accent-color: #4285F4;
+            /* Modern browser coloring for the slider thumb */
+        }
+
+        .row-item {
+            background: #ffffff;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 1. UPDATED: Changed default baseline font-size to 20px */
+        .readable-text {
+            margin: 0;
+            color: #334155;
+            font-size: 20px;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            /* Enhanced button size to balance 20px text */
+            cursor: pointer;
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .icon-btn:hover {
+            background-color: #2b6cb0;
+        }
+
+        .icon-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+    </style>
+    <script>
+        function speakParagraph(pId) {
+            const text = document.getElementById(pId).innerText;
+            const globalSpeed = document.getElementById('master-speed').value;
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = parseFloat(globalSpeed);
+
+            const voices = window.speechSynthesis.getVoices();
+            const googleVoice = voices.find(voice => voice.name.includes('Google') && voice.lang.startsWith('en'));
+
+            if (googleVoice) {
+                utterance.voice = googleVoice;
+            }
+
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function changeTextSize() {
+            const sizeSlider = document.getElementById('master-size');
+            const newSize = sizeSlider.value + 'px';
+            const textElements = document.querySelectorAll('.readable-text');
+
+            textElements.forEach(element => {
+                element.style.fontSize = newSize;
+            });
+        }
+
+        window.speechSynthesis.onvoiceschanged = () => {
+            window.speechSynthesis.getVoices();
+        };
+    </script>
+</head>
+
+<body>
+
+    <h2>Book 4</h2>
+    <a href="english.html">Back to Home</a><br>
+    <div class="controls-panel">
+        <div class="control-group">
+            <label for="master-speed">🎛️ Voice Speed: </label>
+            <input type="range" id="master-speed" min="0.2" max="1.2" step="0.1" value="0.6">
+        </div>
+
+        <div class="control-group">
+            <label for="master-size">🔎 Text Size: </label>
+            <input type="range" id="master-size" min="14" max="36" step="1" value="20" oninput="changeTextSize()">
+        </div>
+    </div>
+    <!-- Unit 1-->
+    <b style="font-size: 20px;">Unit 1</b>
+    <div class="row-item">
+        <p id="pw-0" class="readable-text">
+            sixty.<br>
+            seventy.<br>
+            eighty.<br>
+            ninety.<br>
+            one hundred.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('pw-0')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+    <div class="row-item">
+        <p id="pw-01" class="readable-text">
+            bathroom.<br>
+            bedroom.<br>
+            dining room.<br>
+            kitchen.<br>
+            living room.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('pw-01')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+    <div class="row-item">
+        <p id="p-0" class="readable-text">
+            Where is your sister?<br>
+            She's in the bedroom.<br>
+            Where is Mom?<br>
+            She's in the dining room.<br>
+            Where is Dad?<br>
+            He's in the kitchen.<br>
+            Ben, where are you?<br>
+            I'm in the bathroom.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('p-0')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+
+    <div class="row-item">
+        <p id="p-00" class="readable-text">
+            Where are you?<br>
+            I'm in the living room.<br>
+            Where's Mom?<br>
+            She's in the bedroom.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('p-00')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+
+    <!-- Unit 2-->
+    <b style="font-size: 20px;">Unit 2</b>
+    <div class="row-item">
+        <p id="u2-1" class="readable-text">
+            cooking.<br>
+            eating.<br>
+            sleeping.<br>
+            writing.<br>
+            reading.<br>
+            running.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('u2-1')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+    <div class="row-item">
+        <p id="u2-2" class="readable-text">
+            What's she doing?<br>
+            She's reading.<br>
+            What are you doing?<br>
+            I'm writing.<br>
+            What's Mom doing?<br>
+            She's cooking.<br>
+            What's he doing?<br>
+            He's sleeping.<br>
+            What's Grandma doing?<br>
+            She's eating.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('u2-2')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+    <div class="row-item">
+        <p id="u2-3" class="readable-text">
+            What are you doing?<br>
+            I'm running.<br>
+            What are you doing?<br>
+            I'm reading.<br>
+            What is she doing?<br>
+            She's writing.<br>
+            What is Dad doing?<br>
+            He's cooking.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('u2-3')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+
+    <!-- Review 1-->
+    <b style="font-size: 20px;">Review 1</b>
+    <div class="row-item">
+        <p id="r1" class="readable-text">
+            I'm Tom. I'm writing in the dining room.<br>
+            My brother Ken is in the bedroom. He's sleeping.<br>
+            My friend Lisa is reading in the living room.<br>
+            My sister May is in the kitchen. She's cooking.<br>
+            Where's Bingo? He's under the table.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('r1')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+
+    <!-- Unit 3-->
+    <b style="font-size: 20px;">Unit 3</b>
+    <div class="row-item">
+        <p id="u3-1" class="readable-text">
+            two hot dogs.<br>
+            water.<br>
+            ice cream.<br>
+            milk.<br>
+            a hamburger.<br>
+            juice.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('u3-1')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+    <div class="row-item">
+        <p id="u3-2" class="readable-text">
+            What do you want for lunch?<br>
+            I want a hot dog and some water.<br>
+            I want a hamburger and some ice cream.<br>
+            What do you want for lunch?<br>
+            I want two hamburgers and some juice.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('u3-2')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+    <div class="row-item">
+        <p id="u3-3" class="readable-text">
+            I want a hot dog.<br>
+            I want some water.<br>
+            I want some ice cream.<br>
+            I want some milk.<br>
+            I want two hamburgers.<br>
+            I want some juice.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('u3-3')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+
+    <!-- Unit 4-->
+    <b style="font-size: 20px;">Unit 4</b>
+    <div class="row-item">
+        <p id="u4-1" class="readable-text">
+            bears.<br>
+            lions.<br>
+            monkeys.<br>
+            tigers.<br>
+            zebras.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('u4-1')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+    <div class="row-item">
+        <p id="u4-2" class="readable-text">
+            Do you like zebras?<br>
+            Yes, I do.<br>
+            Do you like tigers?<br>
+            No, I don't.<br>
+            Do you like bears?<br>
+            Yes, I do.<br>
+            Do you like lions?<br>
+            No, I don't.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('u4-2')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+    <div class="row-item">
+        <p id="u4-3" class="readable-text">
+            Do you like bears?<br>
+            Yes, I do.<br>
+            Do you like zebras?<br>
+            No, I don't. I like tigers.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('u4-3')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+
+    <!-- Review 2-->
+    <b style="font-size: 20px;">Review 2</b>
+    <div class="row-item">
+        <p id="r2" class="readable-text">
+            Look! It's a monkey. It's so cool!<br>
+            I like monkeys. Do you like monkeys?<br>
+            Yes, I do.<br>
+            This monkey is for you.<br>
+            Thank you.<br>
+            Jello, do you like monkeys, too?<br>
+            No, I don't. I like bears.<br>
+            This bear is for you.<br>
+            Thanks<br>
+            It's twelve o'clock. Let's have lunch.<br>
+            What do you want for lunch?<br>
+            I want two hot dogs and some ice cream.<br>
+            I want a hamburger and some juice.<br>
+            There is a food stall. Let's go.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('r2')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+
+    <!-- Culture-->
+    <b style="font-size: 20px;">Culture and Festivals</b>
+    <div class="row-item">
+        <p id="c-1" class="readable-text">
+            Dragon Boat Festival.<br><br>
+            What are these?
+            They are rice dumplings.<br>
+            Look!
+            It's the Dragon Boat Festival.<br>
+            Come over to my house.<br>
+            Sure.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('c-1')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+    <div class="row-item">
+        <p id="c-2" class="readable-text">
+            What time is it?<br>
+            It's twelve o'clock.<br>
+            Time to stand an egg.<br><br>
+            Look! It's a dragon boat race.<br>
+            Go! Go! Go!<br><br>
+            This is for you.<br>
+            What's this?<br>
+            It's a sachet.<br>
+            Thank you.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('c-2')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+
+    <!-- Phonics -->
+    <b style="font-size: 20px;">Phonics</b>
+    <div class="row-item">
+        <p id="p-1" class="readable-text">
+            these.<br>
+            teeth.<br>
+            thank.<br>
+            brother.<br>
+            ship.<br>
+            chips.<br>
+            where.<br>
+            elephant.<br>
+            thing.<br>
+            think.<br>
+            fish.<br>
+            chair.<br>
+            song.<br>
+            pink.<br>
+            whale.<br>
+            photo.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('p-1')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+    <div class="row-item">
+        <p id="p-2" class="readable-text">
+            This is my father.<br>
+            He's wearing a pink shirt.<br>
+            This is my mother.<br>
+            She is taking a photo of the whale.<br>
+            Listen! It can sing.<br>
+            "Crunch! Crunch!" What's that sound?<br>
+            Oh, no! Spot is eating my chips.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('p-2')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+    <div class="row-item">
+        <p id="p-3" class="readable-text">
+            It's lunch time. I'm cooking in the kitchen.<br>
+            I'm in the living room. I want a hamburger for lunch.<br>
+            I'm eating in the dining room.<br>
+            I'm in the bathroom.<br>
+            I'm reading in the bedroom. I like monkeys.<br>
+            I'm drawing. I like lions.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('p-3')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+    <div class="row-item">
+        <p id="p-4" class="readable-text">
+            Do you like cats?<br>
+            Yes, I do. They are cute.<br><br>
+            Yay! I'm done.<br><br>
+            Where are you, Mike?<br>
+            I need your help.<br><br>
+            What are you doing, Dad?<br>
+            I'm cooking.<br><br>
+            Let's bake a cake for Mom. I can help.<br>
+            Good idea!<br><br>
+            I'm hungry.<br>
+            Me too.<br><br>
+            What do you want for lunch?<br>
+            We want a hamburger, a hot dog, and some juice. Thank you!<br>
+            OK. See you later.<br><br>
+            I'm home.<br><br>
+            Happy birthday!<br>
+            This is for you, Mom.<br>
+            You're so sweet.<br>
+        </p>
+        <button class="icon-btn" onclick="speakParagraph('p-4')">
+            <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            Speak
+        </button>
+    </div>
+</body>
+
+</html>
